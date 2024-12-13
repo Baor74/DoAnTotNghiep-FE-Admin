@@ -1,7 +1,6 @@
-let app = angular.module('myApp', []);
+// let app = angular.module('myApp', []);
 
-// let app = angular.module('app', [])
-app.controller('PostController', function ($scope, $http, $location) {
+app.controller('PostDetailController', function ($scope, $http, $location) {
     // Retrieve userId from localStorage
     const token = localStorage.getItem('token');
     $scope.user_id = localStorage.getItem('userId');
@@ -54,8 +53,11 @@ app.controller('PostController', function ($scope, $http, $location) {
 
     // Load dữ liệu tỉnh, huyện, xã
     $http.get('https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json')
-        .then(response => $scope.provinces = response.data)
-        .catch(error => console.error('Error loading data:', error));
+    .then(response => {
+        $scope.provinces = response.data;
+        $scope.loadPostData(); // Gọi sau khi danh sách tỉnh đã tải xong
+    })
+    .catch(error => console.error('Error loading data:', error));
 
     // $scope.onProvinceChange = function () {
     //     $scope.selectedDistrict = null;

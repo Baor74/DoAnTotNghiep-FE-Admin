@@ -1,5 +1,5 @@
-angular.module('myApp', [])
-  .controller('PostController', function ($scope, $window, $location, $http) {
+
+app.controller('PostController', function ($scope, $location, $http) {
     $scope.posts = [];
     $scope.page = 0;  // Số trang hiện tại
     $scope.size = 15;  // Số bài đăng mỗi trang
@@ -73,7 +73,8 @@ angular.module('myApp', [])
   
       // Điều hướng đến trang chi tiết bài đăng
       // $location.path('/admin/post-detail/' + postId);
-      $window.location.href = 'AdminDetailPost.html?postId=' + postId;
+      $location.path('/post-detail').search({ postId: postId });
+
   };
   
 

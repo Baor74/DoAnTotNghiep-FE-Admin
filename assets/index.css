@@ -1,1 +1,15 @@
-inital
+aside.aside {
+    position: fixed; /* Giữ cố định ở vị trí */
+    top: 0;
+    left: 0;
+    height: 100vh; /* Chiều cao bằng toàn bộ màn hình */
+    overflow-y: auto; /* Thêm thanh cuộn nếu nội dung vượt quá chiều cao */
+    z-index: 1000; /* Đảm bảo hiển thị lên trên các phần tử khác */
+    width: 250px; /* Đảm bảo chiều rộng */
+    background-color: #17a2b8; /* Đặt lại màu nền nếu cần */
+}
+@media (max-width: 768px) {
+    .aside {
+        display: none;
+    }
+}

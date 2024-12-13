@@ -1,4 +1,4 @@
-let app = angular.module('myApp', []);
+// let app = angular.module('myApp', []);
 app.controller('ApprovalPostController', function($scope, $http) {
 
     // Khởi tạo các biến
