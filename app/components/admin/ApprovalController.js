@@ -63,41 +63,45 @@ app.controller('ApprovalPostController', function($scope, $http, $location) {
     };
 
     // Tìm kiếm bài viết
-    $scope.search = function() {
-        const searchQuery = $scope.searchQuery.trim(); // Loại bỏ khoảng trắng thừa
+    $scope.searchApprovalPosts = function() {
+        // Lấy giá trị tìm kiếm từ input
+        const searchQuery = ($scope.searchQuery || '').trim(); // Xử lý khoảng trắng thừa hoặc giá trị null
     
-    
+        // URL và các tham số của API
         const url = 'http://localhost:8080/api/approval-posts/search';
         const params = {
-            approvalPostId: searchQuery,  // Tìm kiếm theo Approval Post ID
-            page: $scope.currentPage || 0,  // Trang hiện tại
-            size: $scope.pageSize || 15     // Kích thước trang
+            postId: searchQuery,                     // Tìm kiếm gần đúng theo postId
+            page: $scope.currentPage || 0,          // Trang hiện tại (mặc định là 0 nếu chưa có)
+            size: $scope.pageSize || 15             // Số lượng bài viết mỗi trang (mặc định 15)
         };
     
-        // Thêm headers cho API request
+        // Headers cho request
         const headers = {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Thêm Authorization token
-            'Content-Type': 'application/json' // Đảm bảo header là JSON
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Lấy token từ localStorage
+            'Content-Type': 'application/json'                          // Đảm bảo content-type là JSON
         };
     
+        // Gửi yêu cầu GET đến API
         $http.get(url, { params: params, headers: headers })
             .then(function(response) {
-                console.log(response);
-                $scope.approvalPosts = response.data.content || [];
-                $scope.approvalPosts = response.data.content.map(post => {
-                    post.reviewedAtFormatted = post.reviewedAt ? new Date(post.reviewedAt).toLocaleString('en-GB') : 'N/A';
-                    return post;
+                // Xử lý dữ liệu trả về
+                const data = response.data; // Kết quả trả về từ API
+                $scope.approvalPosts = data.content.map(post => {
+                    return {
+                        ...post,
+                        reviewedAtFormatted: post.reviewedAt ? new Date(post.reviewedAt).toLocaleString('vi-VN') : 'N/A' // Định dạng ngày giờ
+                    };
                 });
-                $scope.totalPages = response.data.totalPages;
-                $scope.currentPage = response.data.number;
+                $scope.totalPages = data.totalPages; // Tổng số trang
+                $scope.currentPage = data.number;   // Trang hiện tại
     
                 if ($scope.approvalPosts.length === 0) {
                     alert('Không tìm thấy bài viết nào phù hợp.');
                 }
             })
             .catch(function(error) {
-                console.error('Lỗi khi tìm Approval Post:', error);
-                alert('Không tìm thấy dữ liệu phù hợp.');
+                console.error('Lỗi khi tìm kiếm:', error);
+                alert('Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại.');
             });
     };
     

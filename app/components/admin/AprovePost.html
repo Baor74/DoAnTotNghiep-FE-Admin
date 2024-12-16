@@ -35,14 +35,16 @@
         <div class="row d-flex align-items-center">
             <div class="col-sm-9 mt-3 mb-3">
                 <div class="d-flex align-items-center">
-                    <form class="d-flex flex-grow-1 me-2" ng-submit="search()">
+                    <form class="d-flex flex-grow-1 me-2" ng-submit="searchApprovalPosts()">
                         <div class="form-floating flex-grow-1 me-2">
-                            <input type="search" ng-model="searchQuery" class="form-control"
-                                placeholder="Tìm kiếm theo Post ID">
-                            <label for="fullname">Tìm kiếm theo ID duyệt bài</label>
+                            <!-- Thêm id="searchQuery" để liên kết với label -->
+                            <input type="search" id="searchQuery" ng-model="searchQuery" class="form-control" placeholder="Tìm kiếm theo Post ID">
+                            <label for="searchQuery">Tìm kiếm theo ID duyệt bài</label>
                         </div>
-                        <button class="btn btn-primary me-2" type="button" ng-click="search()">Tìm kiếm</button>
+                        <!-- Đổi type="button" thành type="submit" -->
+                        <button class="btn btn-primary me-2" type="submit">Tìm kiếm</button>
                     </form>
+                    
                     <button class="btn btn-success" type="button" ng-click="getAllApprovalPosts()">Làm mới</button>
                 </div>
             </div>

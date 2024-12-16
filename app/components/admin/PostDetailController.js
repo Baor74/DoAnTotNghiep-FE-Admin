@@ -368,17 +368,22 @@ let map;
 let marker;
 
 function initMap() {
-    map = new google.maps.Map(document.getElementById("map"), { center: { lat: 10.8231, lng: 106.6297 }, zoom: 13 });
+    map = new google.maps.Map(document.getElementById("map"), { 
+        center: { lat: 10.8231, lng: 106.6297 }, 
+        zoom: 13 
+    });
     map.addListener("click", (e) => placeMarker(e.latLng));
 }
 
 function placeMarker(location) {
-    if (marker) marker.setMap(null);
-    marker = new google.maps.Marker({ position: location, map: map });
+    if (marker) marker.setMap(null); // Xóa marker cũ nếu có
+    marker = new google.maps.Marker({
+        position: location,
+        map: map
+    });
 
+    // Cập nhật tọa độ vào scope của AngularJS
     const scope = angular.element(document.getElementById('map')).scope();
-
-    // Cập nhật tọa độ vào scope
     if (!scope.$$phase) {
         scope.$apply(() => {
             scope.post.latitude = location.lat();
@@ -390,4 +395,14 @@ function placeMarker(location) {
     }
 
     alert("Đã lưu tọa độ: " + location.lat() + ", " + location.lng());
+}
+// Hàm để đặt marker vào bản đồ với tọa độ từ API
+function placeMarkerOnMap(position) {
+    if (marker) marker.setMap(null); // Xóa marker cũ
+    marker = new google.maps.Marker({
+        position: position,
+        map: map
+    });
+    map.setCenter(position); // Di chuyển bản đồ đến vị trí của marker
+    map.setZoom(15); // Đặt zoom hợp lý để thấy rõ marker
 }
