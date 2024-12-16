@@ -94,144 +94,162 @@
             </div>
 
 
-        <!-- Area and Price Section -->
-        <div class="card mb-3">
-            <div class="card-header bg-primary text-white">
-                Thông tin bãi và giá tiền
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <label for="capacity">Sức chứa xe:</label>
-                        <input type="number" id="capacity" class="form-control" ng-model="post.capacity"
-                            placeholder="Nhập diện tích">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="price" class="form-label">Giá</label>
-                        <div class="input-group">
-                            <input type="number" id="price" class="form-control" ng-model="post.price"
-                                placeholder="Nhập giá" required>
-                            <select id="priceUnit" ng-model="post.priceUnit" class="form-select" required>
-                                <option value="VND/giờ">VND/giờ</option>
-                                <option value="VND/ngày">VND/ngày</option>
-                                <option value="VND/tháng">VND/tháng</option>
-                            </select>
-                        </div>
-                    </div>
+            <!-- Area and Price Section -->
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    Thông tin bãi và giá tiền
                 </div>
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <!-- Amenities Section -->
-                <div class="card mb-3">
-                    <div class="card-header bg-primary text-white">
-                        Tiện Ích
-                    </div>
-                    <div class="card-body">
-                        <!-- Hiển thị các thẻ tiện ích đã chọn -->
-                        <div class="mb-3">
-                            <h5>Các tiện ích đã chọn:</h5>
-                            <div class="tag-container" id="tagContainer">
-                                <div class="tag" ng-repeat="tag in tags">
-                                    {{tag}}
-                                    <span class="close" ng-click="removeTag(tag)">x</span>
-                                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="capacity">Sức chứa xe:</label>
+                            <input type="number" id="capacity" class="form-control" ng-model="post.capacity"
+                                placeholder="Nhập diện tích">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Giá</label>
+                            <div class="input-group">
+                                <input type="number" id="price" class="form-control" ng-model="post.price"
+                                    placeholder="Nhập giá" required>
+                                <select id="priceUnit" ng-model="post.priceUnit" class="form-select" required>
+                                    <option value="VND/giờ">VND/giờ</option>
+                                    <option value="VND/ngày">VND/ngày</option>
+                                    <option value="VND/tháng">VND/tháng</option>
+                                </select>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Danh sách checkbox các tiện ích -->
-                        <div class="mb-3">
-                            <h5>Chọn tiện ích:</h5>
-                            <div class="row row-cols-2 row-cols-md-3 g-3">
-                                <div class="col" ng-repeat="(key, label) in checkboxOptions">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="checkbox-{{key}}"
-                                            ng-model="post.amenities[key]" ng-change="toggleCheckbox(key, label)">
-                                        <label class="form-check-label" for="checkbox-{{key}}">{{label}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <!-- Amenities Section -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            Tiện Ích
+                        </div>
+                        <div class="card-body">
+                            <!-- Hiển thị các thẻ tiện ích đã chọn -->
+                            <div class="mb-3">
+                                <h5>Các tiện ích đã chọn:</h5>
+                                <div class="tag-container" id="tagContainer">
+                                    <div class="tag" ng-repeat="tag in tags">
+                                        {{tag}}
+                                        <span class="close" ng-click="removeTag(tag)">x</span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-
-                        <!-- Nhập tiện ích tùy chỉnh -->
-                        <div class="input-group">
-                            <input type="text" class="form-control" ng-model="manualInput"
-                                placeholder="Nhập tiện ích..." ng-keydown="addTagOnEnter($event)">
-                            <button class="btn btn-success" style="width:auto !important" type="button"
-                                ng-click="addTag(manualInput)">Thêm</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-sm-6">
-                <div class="card mb-3">
-                    <div class="card-header bg-primary text-white">
-                        Loại phương tiện
-                    </div>
-                    <div class="card-body">
-                        <!-- Hiển thị các thẻ tiện ích đã chọn -->
-                        <div class="mb-3">
-                            <h5>Các loại xe đã chọn:</h5>
-                            <div class="tag-container" id="vehicleTagContainer">
-                                <div class="tag" ng-repeat="vehicle in vehicleTags">
-                                    {{vehicle}}
-                                    <span class="close" ng-click="removeVehicleTag(vehicle)">x</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Danh sách checkbox các loại xe -->
-                        <div class="mb-3">
-                            <h5>Chọn loại xe:</h5>
-                            <div class="row row-cols-2 row-cols-md-3 g-3">
-                                <div class="col" ng-repeat="(key, label) in vehicleCheckboxOptions">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="vehicle-checkbox-{{key}}"
-                                            ng-model="post.vehicleTypes[key]"
-                                            ng-change="toggleVehicleCheckbox(key, label)">
-                                        <label class="form-check-label" for="vehicle-checkbox-{{key}}">{{label}}</label>
+                            <!-- Danh sách checkbox các tiện ích -->
+                            <div class="mb-3">
+                                <h5>Chọn tiện ích:</h5>
+                                <div class="row row-cols-2 row-cols-md-3 g-3">
+                                    <div class="col" ng-repeat="(key, label) in checkboxOptions">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="checkbox-{{key}}"
+                                                ng-model="post.amenities[key]" ng-change="toggleCheckbox(key, label)">
+                                            <label class="form-check-label" for="checkbox-{{key}}">{{label}}</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Nhập loại xe tùy chỉnh -->
-                        <div class="input-group">
-                            <input type="text" class="form-control" ng-model="manualVehicleInput"
-                                placeholder="Nhập loại xe..." ng-keydown="addVehicleTagOnEnter($event)">
-                            <button class="btn btn-success" style="width:auto !important" type="button"
-                                ng-click="addVehicleTag(manualVehicleInput)">Thêm</button>
+
+                            <!-- Nhập tiện ích tùy chỉnh -->
+                            <div class="input-group">
+                                <input type="text" class="form-control" ng-model="manualInput"
+                                    placeholder="Nhập tiện ích..." ng-keydown="addTagOnEnter($event)">
+                                <button class="btn btn-success" style="width:auto !important" type="button"
+                                    ng-click="addTag(manualInput)">Thêm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            Loại phương tiện
+                        </div>
+                        <div class="card-body">
+                            <!-- Hiển thị các thẻ tiện ích đã chọn -->
+                            <div class="mb-3">
+                                <h5>Các loại xe đã chọn:</h5>
+                                <div class="tag-container" id="vehicleTagContainer">
+                                    <div class="tag" ng-repeat="vehicle in vehicleTags">
+                                        {{vehicle}}
+                                        <span class="close" ng-click="removeVehicleTag(vehicle)">x</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Danh sách checkbox các loại xe -->
+                            <div class="mb-3">
+                                <h5>Chọn loại xe:</h5>
+                                <div class="row row-cols-2 row-cols-md-3 g-3">
+                                    <div class="col" ng-repeat="(key, label) in vehicleCheckboxOptions">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="vehicle-checkbox-{{key}}" ng-model="post.vehicleTypes[key]"
+                                                ng-change="toggleVehicleCheckbox(key, label)">
+                                            <label class="form-check-label"
+                                                for="vehicle-checkbox-{{key}}">{{label}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nhập loại xe tùy chỉnh -->
+                            <div class="input-group">
+                                <input type="text" class="form-control" ng-model="manualVehicleInput"
+                                    placeholder="Nhập loại xe..." ng-keydown="addVehicleTagOnEnter($event)">
+                                <button class="btn btn-success" style="width:auto !important" type="button"
+                                    ng-click="addVehicleTag(manualVehicleInput)">Thêm</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
 
-    </div>
 
-
-    <!-- Button Section -->
-    <div class="col-sm-4">
-        <div class="card mb-3">
-            <div class="card-header">
-                Vị trí bản đồ
+        <!-- Button Section -->
+        <div class="col-sm-4">
+            <div class="card mb-3">
+                <div class="card-header">
+                    Vị trí bản đồ
+                </div>
+                <div class="map-container m-3" id="map"></div>
             </div>
-            <div class="map-container m-3" id="map"></div>
-        </div>
-        <div class="text-center mt-3">
-            <a class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#infoModal">Chỉnh sửa ảnh</a>
-        </div>
-        <div class="d-flex justify-content-between align-items-center">
+            <div class="text-center mt-3">
+                <a class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#infoModal">Chỉnh sửa ảnh</a>
+            </div>
+            <!-- Kiểm tra nếu post.status là 'WAITING' để hiển thị các nút Duyệt và Từ chối -->
+            <!-- <div class="d-flex justify-content-between" ng-if="post.status === 'WAITING'">
+                <button class="btn btn-success btn-sm me-1" ng-click="approvePost(post.postId)">
+                    <i class="fa fa-check"></i> Duyệt
+                </button>
+                <button class="btn btn-danger btn-sm" ng-click="rejectPost(post.postId)">
+                    <i class="fa fa-times"></i> Từ chối
+                </button>
+            </div> -->
+
+            <!-- Kiểm tra nếu post.status không phải là 'WAITING' để hiển thị các nút Cập nhật, Xóa và Quay về -->
+            <div ng-if="post.status !== 'WAITING'" class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-success" ng-click="submitPost()">Cập nhật</button>
+                <button class="btn btn-danger mx-2" ng-click="deleteDetailPost()">Xóa bài đăng</button>
+                <button class="btn btn-secondary" ng-click="goBackToPreviousPage()">Quay về</button>
+            </div>
+
+            <!-- <div class="d-flex justify-content-between align-items-center">
             <button class="btn btn-success" ng-click="submitPost()">Cập nhật</button>
             <button class="btn btn-danger" ng-click="deleteDetailPost()">Xóa bài đăng</button>
             <button class="btn btn-secondary" ng-click="goBackToPreviousPage()">Quay về</button>
+        </div> -->
         </div>
-    </div>
 
     </div>
     <!-- Modal -->

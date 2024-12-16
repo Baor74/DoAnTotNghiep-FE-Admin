@@ -1,12 +1,12 @@
-// let app = angular.module('myApp', []);
 
 app.controller('PostDetailController', function ($scope, $http, $location) {
     // Retrieve userId from localStorage
     const token = localStorage.getItem('token');
-    $scope.user_id = localStorage.getItem('userId');
+    const userId = localStorage.getItem('userId');
     const queryParams = new URLSearchParams($location.absUrl().split('?')[1]);
     $scope.postId = queryParams.get('postId');
     const postId = $scope.postId;
+    console.log(postId);
     $scope.currentStep = 1;
     $scope.isLoading = false;
     $scope.isSubmitted = false; // kiểm tra đã đăng bài hay chưa
@@ -160,6 +160,7 @@ app.controller('PostDetailController', function ($scope, $http, $location) {
         }
     };
 
+    
 
     const apiUrl = `http://localhost:8080/api/posts/${postId}`;
 
@@ -225,7 +226,44 @@ app.controller('PostDetailController', function ($scope, $http, $location) {
             });
     };
 
+    $scope.approvePost = function(postId) {
+        $http.post(`http://localhost:8080/api/approval-posts/approve/${postId}`, null, {
+            params: { userId: userId },
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(function(response) {
+            alert("Bài viết đã được duyệt!");
+            $scope.loadPostData();
+        })
+        .catch(function(error) {
+            console.error("Lỗi khi duyệt bài viết:", error);
+        });
+    };
 
+    // Từ chối bài viết
+    $scope.rejectPost = function(postId) {
+        const rejectionReason = prompt("Nhập lý do từ chối:");
+        if (rejectionReason) {
+            $http.post(`http://localhost:8080/api/approval-posts/reject/${postId}`, null, {
+                params: { rejectionReason: rejectionReason, userId: userId },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(function(response) {
+                alert("Bài viết đã bị từ chối!");
+                $scope.loadPostData();
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi từ chối bài viết:", error);
+            });
+        }
+    };
+    
     $scope.amenities = {}; // Để ánh xạ tiện ích đến checkbox
     $scope.vehicleTypes = {}; // Để ánh xạ loại xe đến checkbox
 
@@ -287,7 +325,6 @@ app.controller('PostDetailController', function ($scope, $http, $location) {
                 vehicleTypes: $scope.vehicleTags.map(tag => {
                     return { vehicleTypesName: tag }; // Format vehicle types correctly
                 }),
-                userId: $scope.user_id, // Include the userId to associate the post
             };
 
             // Send the request to update the post

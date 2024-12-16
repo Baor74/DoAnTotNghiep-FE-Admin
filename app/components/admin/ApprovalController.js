@@ -71,7 +71,7 @@ app.controller('ApprovalPostController', function($scope, $http, $location) {
         const params = {
             approvalPostId: searchQuery,  // Tìm kiếm theo Approval Post ID
             page: $scope.currentPage || 0,  // Trang hiện tại
-            size: $scope.pageSize || 10     // Kích thước trang
+            size: $scope.pageSize || 15     // Kích thước trang
         };
     
         // Thêm headers cho API request
