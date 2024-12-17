@@ -3,7 +3,7 @@ let app = angular.module('ParkingAdminApp', ['ngRoute', 'ngSanitize']);
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     $routeProvider
         .when('/', {
-            templateUrl: 'app/components/admin/Home.html',
+            templateUrl: 'app/components/admin/statistic.html',
             controller: 'adminAppController'
         })
         .when('/post', {

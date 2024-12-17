@@ -1,4 +1,3 @@
-let app = angular.module('parkingApp', []);
 
 app.controller('AdminController', function ($scope, $http, $window) {
 

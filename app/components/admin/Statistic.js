@@ -81,7 +81,8 @@ app.controller("adminAppController", function ($scope, $http) {
                             backgroundColor: [
                                 'rgb(255, 99, 132)',
                                 'rgb(54, 162, 235)',
-                                'rgb(255, 205, 86)'
+                                'rgb(255, 205, 86)',
+                                'rgb(52, 321, 43)'
                             ],
                             hoverOffset: 4
                         }]
@@ -137,7 +138,7 @@ app.controller("adminAppController", function ($scope, $http) {
     };
 
     $scope.paymentLineChart = function () {
-        $http.get(`http://localhost:8080/api/vnpay/getRevenueByMonth?year=${$scope.selectYear}`, {
+        $http.get(`http://localhost:8080/api/statistic/getRevenueByMonth?year=${$scope.selectYear}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
