@@ -1,6 +1,6 @@
 let app = angular.module('ParkingAdminApp', ['ngRoute', 'ngSanitize']);
 
-app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+app.config(["$routeProvider", "$locationProvider", function ($routeProvider, $locationProvider) {
     $routeProvider
         .when('/', {
             templateUrl: 'app/components/admin/statistic.html',
