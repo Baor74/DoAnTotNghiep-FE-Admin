@@ -26,6 +26,7 @@ app.controller('LoginController', function ($scope, $location, $http, $window) {
                     localStorage.setItem('username', $scope.login.username);
                     localStorage.setItem('userId', userId);
                     localStorage.setItem('roleName', roleName);
+                    localStorage.setItem('roleName', roleName);
                     const redirectUrl = localStorage.getItem('redirectUrl');
 
                     if (roleName === 'ADMIN') {
