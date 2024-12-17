@@ -1,4 +1,4 @@
-let app = angular.module("adminApp", []);
+// let app = angular.module("adminApp", []);
 
 app.controller("adminAppController", function ($scope, $http) {
 
@@ -14,10 +14,7 @@ app.controller("adminAppController", function ($scope, $http) {
         if ($scope.year && !isNaN($scope.year) && $scope.year.toString().length === 4 && $scope.year <= $scope.selectYear) {
             $scope.selectYear = $scope.year;
 
-            // tải lại chart
-            fetchDataAndRenderPieChart();
-            fetchDataAndRenderLineChart();
-            $scope.payment();
+            $scope.paymentLineChart();
         } else {
             alert("Vui lòng nhập đúng năm");
         }
@@ -51,7 +48,7 @@ app.controller("adminAppController", function ($scope, $http) {
 
     }
 
-    const fetchDataAndRenderPieChart = () => {
+    $scope.postsPieChart = function () {
         $http.get(`http://localhost:8080/api/statistic/countPostsGroupedByStatus`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -99,49 +96,47 @@ app.controller("adminAppController", function ($scope, $http) {
 
     }
 
-    const fetchDataAndRenderLineChart = () => {
-        $scope.users = function () {
-            $http.get(`http://localhost:8080/api/users/getUsersByMonthAndRole?year=${$scope.selectYear}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-                .then((response) => {
-                    if (response.data.status) {
-                        $scope.dataRegistrations = response.data.data;
+    $scope.usersLineChart = function () {
+        $http.get(`http://localhost:8080/api/users/getUsersByMonthAndRole?year=${$scope.selectYear}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then((response) => {
+                if (response.data.status) {
+                    $scope.dataRegistrations = response.data.data;
 
-                        const registrations = new Array(12).fill(0);
+                    const registrations = new Array(12).fill(0);
 
-                        if ($scope.dataRegistrations && Array.isArray($scope.dataRegistrations)) {
-                            $scope.dataRegistrations.forEach(item => {
-                                const monthIndex = item[0] - 1;
-                                const count = item[1];
-                                registrations[monthIndex] = count;
-                            });
-                        }
-
-                        const lineChartData = {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Số lượng tài khoản đăng kí qua từng tháng năm ' + $scope.selectYear,
-                                data: registrations,
-                                fill: false,
-                                borderColor: 'rgb(75, 192, 192)',
-                                tension: 0.1
-                            }]
-                        };
-
-                        initializeLineChart(lineChartData);
-                    } else {
-                        console.log(response.data.message);
+                    if ($scope.dataRegistrations && Array.isArray($scope.dataRegistrations)) {
+                        $scope.dataRegistrations.forEach(item => {
+                            const monthIndex = item[0] - 1;
+                            const count = item[1];
+                            registrations[monthIndex] = count;
+                        });
                     }
-                }).catch((err) => {
-                    console.log(err);
-                });
-        };
-    }
 
-    $scope.payment = function () {
+                    const lineChartData = {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Tổng số tài khoản đăng kí qua từng tháng năm ' + $scope.selectYear,
+                            data: registrations,
+                            fill: false,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    };
+
+                    initializeLineChart(lineChartData);
+                } else {
+                    console.log(response.data.message);
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
+    };
+
+    $scope.paymentLineChart = function () {
         $http.get(`http://localhost:8080/api/vnpay/getRevenueByMonth?year=${$scope.selectYear}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -176,11 +171,94 @@ app.controller("adminAppController", function ($scope, $http) {
         }).catch((err) => {
             console.log(err);
         });
+
     };
+    $scope.postLineChart = function () {
+        $http.get(`http://localhost:8080/api/statistic/countActivePostsByMonthAndYear?year=${$scope.selectYear}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((response) => {
+            if (response.data.status) {
+                const dataPayment = response.data.data;
 
-    fetchDataAndRenderPieChart();
+                const revenues = new Array(12).fill(0);
 
-    // Fetch initial data and render the lineChart
-    fetchDataAndRenderLineChart();
-    $scope.payment();
+                if (dataPayment && Array.isArray(dataPayment)) {
+                    dataPayment.forEach(item => {
+                        const monthIndex = item[0] - 1;
+                        const revenue = item[1];
+                        revenues[monthIndex] = revenue;
+                    });
+                }
+
+                const lineChartData = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Tổng bài đăng qua từng tháng năm ' + $scope.selectYear,
+                        data: revenues,
+                        fill: false,
+                        borderColor: 'rgb(75, 195, 195)',
+                        tension: 0.1
+                    }]
+                };
+
+                initializeLineChart(lineChartData);
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+    };
+    $scope.countUsers = function () {
+        $http.get("http://localhost:8080/api/statistic/countUsers", {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then((response) => {
+                if (response.data.status) {
+                    $scope.totalUsers = response.data.data
+                }
+            }).catch((err) => {
+                console.log(err);
+
+            });
+    }
+    $scope.countPosts = function () {
+        $http.get("http://localhost:8080/api/statistic/countPosts", {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then((response) => {
+                if (response.data.status) {
+                    $scope.totalPosts = response.data.data
+                }
+            }).catch((err) => {
+                console.log(err);
+
+            });
+    }
+    $scope.countPayments = function () {
+        $http.get("http://localhost:8080/api/statistic/countPayments", {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then((response) => {
+                if (response.data.status) {
+                    $scope.totalPayments = response.data.data
+                }
+            }).catch((err) => {
+                console.log(err);
+
+            });
+    }
+
+    $scope.countUsers();
+    $scope.countPayments();
+    $scope.countPosts();
+    // render chart
+    $scope.postsPieChart();
+    $scope.paymentLineChart();
 });

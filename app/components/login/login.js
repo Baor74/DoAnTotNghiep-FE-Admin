@@ -31,8 +31,8 @@ app.controller('LoginController', function ($scope, $location, $http, $window) {
                         // Chuyển hướng đến trang trước đó
                         $location.absUrl(redirectUrl);
                     } else {
-                        // Mặc định 
-                        //$window.location.href = 'index.html';
+
+                        $window.location.href = '/';
                     }
                 } else {
                     $scope.message = response.data.message;
