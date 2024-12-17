@@ -1,5 +1,19 @@
 let app = angular.module('ParkingAdminApp', ['ngRoute', 'ngSanitize']);
 
+// Đặt đoạn mã xử lý logic trước khi thay đổi route
+app.run(['$rootScope', '$location', function ($rootScope, $location) {
+    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+        // Kiểm tra token trong localStorage
+        const token = localStorage.getItem('token');
+
+        // Nếu không có token và không phải đang ở trang đăng nhập
+        if (!token && $location.path() !== '/login') {
+            event.preventDefault(); // Ngăn chặn điều hướng
+            $location.path('/login'); // Chuyển hướng đến trang đăng nhập
+        }
+    });
+}]);
+
 app.config(["$routeProvider", "$locationProvider", function ($routeProvider,  $locationProvider) {
     $locationProvider.html5Mode(false); // Sử dụng hash mode
     $locationProvider.hashPrefix(''); // Không thêm ký tự "!"
@@ -11,6 +25,10 @@ app.config(["$routeProvider", "$locationProvider", function ($routeProvider,  $l
         .when('/statistic', {
             templateUrl: 'app/components/admin/statistic.html',
             controller: 'adminAppController'
+        })
+        .when('/login', {
+            templateUrl: 'app/components/login/Login.html',
+            controller: 'LoginController'
         })
         .when('/post', {
             templateUrl: 'app/components/admin/Post.html',

@@ -1,4 +1,3 @@
-let app = angular.module('AdminApp', []);
 
 app.controller('LoginController', function ($scope, $location, $http, $window) {
     $scope.login = {
