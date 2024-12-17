@@ -78,7 +78,7 @@ app.controller('PostController', function ($scope, $location, $http) {
 
   };
 
-
+  
   // Hàm khởi tạo và tải các bài đăng khi load trang
   $scope.init = function () {
     $scope.loadPosts();

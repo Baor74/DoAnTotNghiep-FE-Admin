@@ -26,7 +26,7 @@
     <base href="/">
 </head>
 
-<body class="d-flex row">
+<body class="d-flex row" ng-controller="HomeController">
 
     <aside class="aside bg-info p-3" style="width: 250px; height: 100vh; color:black">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
@@ -36,7 +36,11 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li>
+<<<<<<< HEAD
                 <a href="#/" class="nav-link text-black">
+=======
+                <a href="#/home" class="nav-link text-black">
+>>>>>>> 377511ac9ee660f85d98ee9c7c2cacbab37df46c
                     <i class="fas fa-home-alt me-2"></i> Trang chủ
                 </a>
             </li>
@@ -76,6 +80,11 @@
                     <i class="fas fa-flag me-2"></i> Thống kê
                 </a>
             </li>
+            <li>
+                <a ng-click="logout()" class="nav-link text-black me-2">
+                    <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+                </a>
+            </li>
         </ul>
     </aside>
 
@@ -96,6 +105,10 @@
 <script src="/app/components/admin/Users.js"></script>
 <script src="/app/components/admin/Statistic.js"></script>
 <script src="/app/components/admin/PaymentController.js" defer></script>
+<<<<<<< HEAD
 <script src="/app/components/login/login.js" defer></script>
 
+=======
+<script src="/app/components/admin/Home.js"></script>
+>>>>>>> 377511ac9ee660f85d98ee9c7c2cacbab37df46c
 </html>

@@ -1,6 +1,6 @@
 // let app = angular.module("adminApp", []);
 
-app.controller("adminAppController", function ($scope, $http) {
+app.controller("adminAppController", function ($scope, $http, $location) {
 
     const token = localStorage.getItem("token");
     const labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -255,11 +255,19 @@ app.controller("adminAppController", function ($scope, $http) {
 
             });
     }
-
-    $scope.countUsers();
-    $scope.countPayments();
-    $scope.countPosts();
-    // render chart
-    $scope.postsPieChart();
-    $scope.paymentLineChart();
+    const roleName = localStorage.getItem('roleName');
+    $scope.init = function () {
+        if (roleName === 'ADMIN') {
+            $scope.countUsers();
+            $scope.countPayments();
+            $scope.countPosts();
+            // render chart
+            $scope.postsPieChart();
+            $scope.paymentLineChart();
+        } else {
+            alert('Bạn không có quyền truy cập !');
+            $location.path('/')
+        }
+    }
+    $scope.init();
 });

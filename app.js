@@ -1,5 +1,6 @@
 let app = angular.module('ParkingAdminApp', ['ngRoute', 'ngSanitize']);
 
+<<<<<<< HEAD
 // Đặt đoạn mã xử lý logic trước khi thay đổi route
 app.run(['$rootScope', '$location', function ($rootScope, $location) {
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
@@ -14,10 +15,17 @@ app.run(['$rootScope', '$location', function ($rootScope, $location) {
     });
 }]);
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+=======
+app.config(["$routeProvider", "$locationProvider", function ($routeProvider,  $locationProvider) {
+>>>>>>> 377511ac9ee660f85d98ee9c7c2cacbab37df46c
     $locationProvider.html5Mode(false); // Sử dụng hash mode
     $locationProvider.hashPrefix(''); // Không thêm ký tự "!"
     $routeProvider
         .when('/', {
+            templateUrl: 'app/components/admin/Home.html',
+            controller: 'HomeController'
+        })
+        .when('/statistic', {
             templateUrl: 'app/components/admin/statistic.html',
             controller: 'adminAppController'
         })
