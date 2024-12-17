@@ -1,10 +1,19 @@
-
 app.service('ReportService', function ($http) {
-    let baseUrl = 'http://localhost:8080/api/admin/reports';
+    var baseUrl = 'http://localhost:8080/api/admin/reports';
+
+    // Hàm thêm header chứa token
+    function getConfig() {
+        var token = localStorage.getItem('token');
+        return {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        };
+    }
 
     // Lấy tất cả báo cáo
     this.getReports = function () {
-        return $http.get(baseUrl + '/all')
+        return $http.get(baseUrl + '/all', getConfig())
             .then(function (response) {
                 return response.data;
             })
@@ -21,7 +30,7 @@ app.service('ReportService', function ($http) {
         if (rejectedReason) {
             data.rejectedReason = rejectedReason;
         }
-        return $http.put(url, data)
+        return $http.put(url, data, getConfig())
             .then(function (response) {
                 return response.data;
             })
@@ -117,18 +126,20 @@ app.controller('ReportController', function ($scope, ReportService) {
     $scope.searchReports = function () {
         $scope.filteredReports = $scope.allReports.filter(function (report) {
             var matchStatus = !$scope.filters.status || report.status === $scope.filters.status;
-            var matchType = !$scope.filters.reportType || report.reportType.toLowerCase().includes($scope.filters.reportType.toLowerCase());
-            var matchContent = !$scope.filters.reportContent || report.reportContent.toLowerCase().includes($scope.filters.reportContent.toLowerCase());
+            var matchType = !$scope.filters.reportType || 
+                (report.reportType && report.reportType.toLowerCase().includes($scope.filters.reportType.toLowerCase()));
+            var matchContent = !$scope.filters.reportContent || 
+                (report.reportContent && report.reportContent.toLowerCase().includes($scope.filters.reportContent.toLowerCase()));
             var matchStartDate = !$scope.filters.startDate || new Date(report.createdAt) >= new Date($scope.filters.startDate);
             var matchEndDate = !$scope.filters.endDate || new Date(report.createdAt) <= new Date($scope.filters.endDate);
-
+    
             return matchStatus && matchType && matchContent && matchStartDate && matchEndDate;
         });
-
+    
         // Sau khi tìm kiếm, áp dụng sắp xếp nếu có
         $scope.sortReports();
     };
-
+    
     // Reset bộ lọc tìm kiếm
     $scope.resetFilters = function () {
         $scope.filters = {};
