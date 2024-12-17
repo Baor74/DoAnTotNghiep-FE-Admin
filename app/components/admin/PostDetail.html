@@ -241,7 +241,6 @@
             <div ng-if="post.status !== 'WAITING'" class="d-flex justify-content-between align-items-center">
                 <button class="btn btn-success" ng-click="submitPost()">Cập nhật</button>
                 <button class="btn btn-danger mx-2" ng-click="deleteDetailPost()">Xóa bài đăng</button>
-                <button class="btn btn-secondary" ng-click="goBackToPreviousPage()">Quay về</button>
             </div>
 
             <!-- <div class="d-flex justify-content-between align-items-center">
@@ -254,26 +253,41 @@
     </div>
     <!-- Modal -->
     <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="infoModalLabel">Thông Tin Chi Tiết</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Nội dung modal -->
-                    <p>Thông tin chi tiết bài đăng:</p>
-                    <ul>
-                        <li><strong>Tiêu đề:</strong> {{currentPost.parkingName}}</li>
-                        <li><strong>Mô tả:</strong> {{currentPost.description}}</li>
-                        <li><strong>Diện tích:</strong> {{currentPost.capacity}} m²</li>
-                        <li><strong>Giá:</strong> {{currentPost.price}} / {{currentPost.priceUnit}}</li>
-                        <li><strong>Địa chỉ:</strong> {{currentPost.street}}, {{currentPost.wardName}},
-                            {{currentPost.districtName}}, {{currentPost.provinceName}}</li>
-                    </ul>
+                    <h2 class="text-center">Hình ảnh</h2>
+                    <div class="image-upload">
+                        <label for="file-input" class="text-center">
+                            <div class="image-placeholder">
+                                <span>+</span>
+                                <p>Nhấp để đưa ảnh lên</p>
+                            </div>
+                        </label>
+                        <input id="file-input" type="file" multiple
+                            onchange="angular.element(this).scope().onFileSelect(this.files)" accept="image/*">
+                    </div>
+                    <p class="note">Lưu ý: Bạn cần ít nhất 1 ảnh (Tối đa 10 ảnh) để đăng tin</p>
+
+                    <div class="preview-images" ng-if="imageUrls.length > 0 || newImages.length > 0">
+                        <h3>Ảnh đã tải lên:</h3>
+                        <div class="row">
+                            <div class="col-md-3 m-3" ng-repeat="image in imageUrls.concat(newImages)">
+                                <img ng-src="{{image.preview || image}}" alt="Preview Image" class="img-thumbnail" />
+                                <p>{{image.name || 'Ảnh cũ'}}</p>
+                                <button type="button" class="btn btn-danger" ng-click="removeImage(image)">Xóa
+                                    ảnh</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hoàn tất</button>
                 </div>
             </div>
         </div>

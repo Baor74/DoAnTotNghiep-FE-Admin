@@ -18,6 +18,19 @@ app.controller('PaymentController', function ($scope, $http, $location) {
         }
     };
 
+    $scope.loadAllPayments = function () {
+        $http.get('http://localhost:8080/admin/payments/all') // URL API
+            .then(function (response) {
+                $scope.payments = response.data; // Lưu danh sách thanh toán vào $scope.payments
+            })
+            .catch(function (error) {
+                console.error('Lỗi khi tải danh sách thanh toán:', error);
+                $scope.errorMessage = 'Không thể tải danh sách thanh toán. Vui lòng thử lại sau.';
+            });
+    };
+
+    // Gọi hàm loadAllPayments khi controller được khởi tạo
+
     // Load payments with pagination
     $scope.loadPayments = function (userId, page, size) {
         $http.get(`http://localhost:8080/api/vnpay/user/${userId}`, {
@@ -116,6 +129,7 @@ app.controller('PaymentController', function ($scope, $http, $location) {
     
 
     
-    // Initial load
-    $scope.loadPayments(1, 0, $scope.pageSize); // Load for userId = 1
+ 
+    $scope.loadPayments(1, 0, $scope.pageSize);
+    // $scope.loadAllPayments();
 });
