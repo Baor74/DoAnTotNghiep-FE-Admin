@@ -21,19 +21,20 @@ app.controller('LoginController', function ($scope, $location, $http, $window) {
 
                     const token = response.data.data.token;
                     const userId = response.data.data.userId;
+                    const roleName = response.data.data.roleName;
                     localStorage.setItem('token', token);
                     localStorage.setItem('username', $scope.login.username);
                     localStorage.setItem('userId', userId);
+                    localStorage.setItem('roleName', roleName);
                     const redirectUrl = localStorage.getItem('redirectUrl');
-                    if (redirectUrl) {
-                        // Xóa URL đã lưu sau khi chuyển hướng
-                        localStorage.removeItem('redirectUrl');
-                        // Chuyển hướng đến trang trước đó
-                        $location.absUrl(redirectUrl);
-                    } else {
 
-                        $window.location.href = '/';
+                    if (roleName === 'ADMIN') {
+                        $window.location.href = '#/statistic';
+                    } else {
+                        $window.location.href = '#/';
                     }
+
+
                 } else {
                     $scope.message = response.data.message;
                 }
