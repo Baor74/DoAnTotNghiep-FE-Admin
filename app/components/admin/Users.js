@@ -1,4 +1,4 @@
-let app = angular.module('parkingApp', []);
+
 
 app.controller('AdminController', function ($scope, $http, $window) {
 
@@ -161,15 +161,64 @@ app.controller('AdminController', function ($scope, $http, $window) {
             )
     }
 
-    $scope.username = '';
-    $scope.password = '';
-    $scope.createAccount = function () {
-        const data = {
-            username: $scope.username,
-            password: $scope.password,
 
+    $scope.data = {
+        username: '',
+        password: '',
+        phoneNumber: ''
+    };
+    $scope.confirmPassword = '';
+    $scope.error = {}; // Khởi tạo $scope.error để lưu thông báo lỗi
+
+    $scope.createAccount = function () {
+        // Kiểm tra các trường không được để trống
+        if (!$scope.data.username || !$scope.data.password || !$scope.confirmPassword || !$scope.data.phoneNumber) {
+            $scope.error.emptyField = 'Vui lòng điền đầy đủ thông tin.';
+            return;
         }
-    }
+        $scope.error.emptyField = ''; // Xóa lỗi nếu đầy đủ thông tin
+
+        // Kiểm tra số điện thoại chỉ chứa số
+        const phoneRegex = /^[0-9]+$/;
+        if (!phoneRegex.test($scope.data.phoneNumber)) {
+            $scope.error.phoneNumber = 'Số điện thoại chỉ được chứa chữ số.';
+            return;
+        }
+        $scope.error.phoneNumber = ''; // Xóa lỗi nếu số điện thoại hợp lệ
+
+        // Kiểm tra mật khẩu có độ dài từ 6-20 ký tự và chứa cả chữ lẫn số
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/;
+        if (!passwordRegex.test($scope.data.password)) {
+            $scope.error.password = 'Mật khẩu phải từ 6-20 ký tự và chứa cả chữ lẫn số.';
+            return;
+        }
+        $scope.error.password = ''; // Xóa lỗi nếu mật khẩu hợp lệ
+
+        // Kiểm tra mật khẩu và xác nhận mật khẩu khớp
+        if ($scope.data.password !== $scope.confirmPassword) {
+            $scope.error.confirmPassword = 'Mật khẩu và xác nhận mật khẩu không khớp.';
+            return;
+        }
+        $scope.error.confirmPassword = ''; // Xóa lỗi nếu mật khẩu khớp
+
+        // Gửi request HTTP
+        $http.post('http://localhost:8080/api/administration/user/register-staff', $scope.data, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then((response) => {
+                if (response.data.status) {
+                    $scope.showToast("Tạo tài khoản thành công!");
+                } else {
+                    alert(response.data.message);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                $scope.showToast("Có lỗi xảy ra. Vui lòng thử lại!");
+            });
+    };
 
     // cập nhật trạng thái tài khoản
     $scope.updateActive = function (id, isActive) {

@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="parkingApp">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 </head>
 
@@ -44,7 +41,7 @@
                 <div class="form-group align-self-end">
                     <button type="button" class="btn btn-outline-primary me-3" ng-click="findUser()">Tìm kiếm</button>
                     <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal"
-                        data-bs-target="#exampleModal">Tạo tài khoản</button>
+                        data-bs-target="#registerModal">Tạo tài khoản</button>
                 </div>
             </div>
 
@@ -254,6 +251,61 @@
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Tạo tài khoản nhân viên</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createAccountForm" class="mt-4" novalidate>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Tên đăng nhập</label>
+                            <input type="text" class="form-control" id="username" placeholder="Nhập tên đăng nhập"
+                                ng-model="data.username" required>
+                        </div>
+                        <div class="text-danger mt-1" ng-if="error.emptyField">
+                            {{ error.emptyField }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" placeholder="Nhập mật khẩu"
+                                ng-model="data.password" required>
+                            <div class="text-danger mt-1" ng-if="error.password">
+                                {{ error.password }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu</label>
+                            <input type="password" class="form-control" id="confirmPassword"
+                                placeholder="Nhập lại mật khẩu" ng-model="confirmPassword" required>
+                            <div class="text-danger mt-1" ng-if="error.confirmPassword">
+                                {{ error.confirmPassword }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" id="phoneNumber" placeholder="Nhập số điện thoại"
+                                ng-model="data.phoneNumber" required>
+                            <div class="text-danger mt-1" ng-if="error.phoneNumber">
+                                {{ error.phoneNumber }}
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" ng-click="createAccount()">Tạo tài khoản</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Toast Notification -->
     <div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
 
@@ -271,7 +323,6 @@
         </div>
     </div>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/angular/angular.min.js"></script>
-<script src="Users.js"></script>
+
 
 </html>

@@ -21,7 +21,7 @@ app.controller('LoginController', function ($scope, $location, $http, $window) {
 
                     const token = response.data.data.token;
                     const userId = response.data.data.userId;
-                    const roleName = response.data.data.roleName
+                    const roleName = response.data.data.roleName;
 
                     localStorage.setItem('token', token);
                     localStorage.setItem('username', $scope.login.username);
@@ -35,7 +35,7 @@ app.controller('LoginController', function ($scope, $location, $http, $window) {
                         $location.absUrl(redirectUrl);
                     } else {
 
-                        $window.location.href = '/';
+                        $window.location.href = '#/';
                     }
                 } else {
                     $scope.message = response.data.message;
