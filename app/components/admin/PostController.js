@@ -15,6 +15,9 @@ app.controller('PostController', function ($scope, $location, $http) {
       params: {
         page: $scope.page,
         size: $scope.size
+      },
+      headers: {
+        'Authorization': 'Bearer ' + token,
       }
     }).then(function (response) {
       // Khi nhận được dữ liệu, cập nhật posts và tổng số trang

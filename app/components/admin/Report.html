@@ -10,17 +10,20 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
     <style>
-       .table thead th {
+        .table thead th {
             background-color: #007bff;
             color: white;
             text-align: center;
         }
+
         h2 {
             color: #007bff;
         }
+
         .form-group label {
             font-weight: bold;
         }
+
         /* Đảm bảo các nút trong cột hành động ngang hàng */
         .action-buttons {
             display: flex;
@@ -85,7 +88,7 @@
 
         <!-- Bảng báo cáo -->
         <table class="table table-bordered table-striped">
-            <thead >
+            <thead>
                 <tr>
                     <th>ID Báo Cáo</th>
                     <th>Loại Báo Cáo</th>
@@ -105,16 +108,16 @@
                     <td>{{ report.user }}</td>
                     <td>{{ report.post }}</td>
                     <td>{{ report.reportContent }}</td>
-                    <td>
-                        {{ report.status }}
-                        <span ng-if="report.status.startsWith('Bị từ chối')"> - Lý do: {{ report.rejectedReason }}</span>
-                    </td>
-                    <td>{{ report.createdAt | date:'dd-MM-yyyy HH:mm' }}</td>
-                    <td>{{ report.user }}</td>
-                    <td>
-                        <button class="btn btn-info btn-sm" ng-click="viewDetails(report)">Xem chi tiết</button>
-                        <button class="btn btn-success btn-sm" ng-click="approveReport(report.reportId)">Duyệt</button>
-                        <button class="btn btn-danger btn-sm" ng-click="rejectReport(report)">Từ chối</button>
+                    <td>{{ report.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                    <td>{{ report.status }}</td>
+                    <td>{{ report.rejectedReason || 'N/A' }}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-info btn-sm" ng-click="vm.viewReportDetails(report)">Xem chi
+                            tiết</button>
+                        <button class="btn btn-success btn-sm" ng-click="vm.approveReport(report.reportId)"
+                            ng-disabled="report.status === 'Đã duyệt'">Duyệt</button>
+                        <button class="btn btn-danger btn-sm" ng-click="vm.openRejectModal(report)"
+                            ng-disabled="report.status === 'Bị từ chối'">Từ chối</button>
                     </td>
                 </tr>
             </tbody>
@@ -133,208 +136,6 @@
                 ng-click="vm.changePage(vm.totalPages)">Cuối</button>
         </div>
     </div>
-
-    <!-- Modal xem chi tiết báo cáo -->
-    <div class="modal" tabindex="-1" role="dialog" id="detailsModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chi tiết Báo cáo</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Báo cáo ID:</strong> {{ vm.selectedReport.reportId }}</p>
-                    <p><strong>Loại Báo Cáo:</strong> {{ vm.selectedReport.reportType }}</p>
-                    <p><strong>Người Dùng:</strong> {{ vm.selectedReport.user || 'N/A' }}</p>
-                    <p><strong>Bài Viết:</strong> {{ vm.selectedReport.post || 'N/A' }}</p>
-                    <p><strong>Thông Tin Báo Cáo:</strong> {{ vm.selectedReport.reportContent }}</p>
-                    <p><strong>Ngày Tạo:</strong> {{ vm.selectedReport.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</p>
-                    <p><strong>Trạng Thái:</strong> {{ vm.selectedReport.status }}</p>
-                    <p><strong>Lý Do Từ Chối:</strong> {{ vm.selectedReport.rejectedReason || 'N/A' }}</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- <script>
-        var app = angular.module('myApp', []);
-
-        app.service('ReportService', function ($http) {
-            var baseUrl = 'http://localhost:8080/api/admin/reports';
-
-            // Lấy tất cả báo cáo
-            this.getReports = function () {
-                return $http.get(baseUrl + '/all')
-                    .then(function (response) {
-                        return response.data;
-                    })
-                    .catch(function (error) {
-                        console.error("Error fetching reports:", error);
-                        throw error;
-                    });
-            };
-
-            // Cập nhật trạng thái của báo cáo
-            this.updateReportStatus = function (reportId, status, rejectedReason) {
-                var url = baseUrl + '/' + reportId + '/status';
-                var data = { status: status };
-                if (rejectedReason) {
-                    data.rejectedReason = rejectedReason;
-                }
-                return $http.put(url, data)
-                    .then(function (response) {
-                        return response.data;
-                    })
-                    .catch(function (error) {
-                        console.error("Error updating report status:", error);
-                        throw error;
-                    });
-            };
-        });
-
-        app.controller('ReportController', function ($scope, ReportService) {
-            $scope.reports = [];
-            $scope.filters = {};
-            $scope.selectedReport = null;
-            $scope.rejectingReport = null;
-            $scope.rejectReason = "";
-
-            // Tải danh sách báo cáo
-            $scope.loadReports = function () {
-                ReportService.getReports().then(function (data) {
-                    $scope.allReports = angular.copy(data); // Lưu trữ danh sách gốc
-                    $scope.filteredReports = data;
-                }).catch(function (error) {
-                    console.error("Lỗi khi tải báo cáo:", error);
-                    alert("Lỗi khi tải báo cáo.");
-                });
-            };
-
-            // Xem chi tiết báo cáo
-            $scope.viewDetails = function (report) {
-                $scope.selectedReport = report;
-                $('#viewReportModal').modal('show');
-            };
-
-            // Đóng modal chi tiết
-            $scope.closeDetails = function () {
-                $scope.selectedReport = null;
-                $('#viewReportModal').modal('hide');
-            };
-
-            // Duyệt báo cáo
-            $scope.approveReport = function (reportId) {
-                ReportService.updateReportStatus(reportId, 'Đã duyệt').then(function () {
-                    // Cập nhật trạng thái trong danh sách
-                    var index = $scope.filteredReports.findIndex(r => r.reportId === reportId);
-                    if (index !== -1) {
-                        $scope.filteredReports[index].status = 'Đã duyệt';
-                        $scope.filteredReports[index].rejectedReason = null;
-                    }
-                    alert("Báo cáo đã được duyệt.");
-                }).catch(function () {
-                    alert("Lỗi khi duyệt báo cáo.");
-                });
-            };
-
-            // Từ chối báo cáo
-            $scope.rejectReport = function (report) {
-                $scope.rejectingReport = report;
-                $scope.rejectReason = "";
-                $('#rejectReportModal').modal('show');
-            };
-
-            // Xác nhận từ chối báo cáo
-            $scope.confirmReject = function () {
-                if (!$scope.rejectReason.trim()) {
-                    alert("Vui lòng nhập lý do từ chối.");
-                    return;
-                }
-                var reportId = $scope.rejectingReport.reportId;
-                var statusWithReason = 'Bị từ chối';
-                ReportService.updateReportStatus(reportId, statusWithReason, $scope.rejectReason).then(function () {
-                    // Cập nhật trạng thái và lý do trong danh sách
-                    var index = $scope.filteredReports.findIndex(r => r.reportId === reportId);
-                    if (index !== -1) {
-                        $scope.filteredReports[index].status = 'Bị từ chối';
-                        $scope.filteredReports[index].rejectedReason = $scope.rejectReason;
-                    }
-                    $('#rejectReportModal').modal('hide');
-                    alert("Báo cáo đã bị từ chối.");
-                }).catch(function () {
-                    alert("Lỗi khi từ chối báo cáo.");
-                });
-            };
-
-            // Hủy từ chối báo cáo
-            $scope.cancelReject = function () {
-                $scope.rejectingReport = null;
-                $scope.rejectReason = "";
-                $('#rejectReportModal').modal('hide');
-            };
-
-            // Tìm kiếm báo cáo
-            $scope.searchReports = function () {
-                $scope.filteredReports = $scope.allReports.filter(function (report) {
-                    var matchStatus = !$scope.filters.status || report.status === $scope.filters.status;
-                    var matchType = !$scope.filters.reportType || report.reportType.toLowerCase().includes($scope.filters.reportType.toLowerCase());
-                    var matchContent = !$scope.filters.reportContent || report.reportContent.toLowerCase().includes($scope.filters.reportContent.toLowerCase());
-                    var matchStartDate = !$scope.filters.startDate || new Date(report.createdAt) >= new Date($scope.filters.startDate);
-                    var matchEndDate = !$scope.filters.endDate || new Date(report.createdAt) <= new Date($scope.filters.endDate);
-
-                    return matchStatus && matchType && matchContent && matchStartDate && matchEndDate;
-                });
-
-                // Sau khi tìm kiếm, áp dụng sắp xếp nếu có
-                $scope.sortReports();
-            };
-
-            // Reset bộ lọc tìm kiếm
-            $scope.resetFilters = function () {
-                $scope.filters = {};
-                $scope.filteredReports = angular.copy($scope.allReports);
-            };
-
-            // Sắp xếp báo cáo
-            $scope.sortReports = function () {
-                if ($scope.filters.sortBy) {
-                    var sortBy = $scope.filters.sortBy.split('_');
-                    var sortField = sortBy[0];
-                    var sortOrder = sortBy[1] === 'asc' ? 1 : -1;
-
-                    $scope.filteredReports.sort(function (a, b) {
-                        var aValue = a[sortField];
-                        var bValue = b[sortField];
-
-                        // Nếu là ngày tạo, chuyển đổi thành timestamp để so sánh
-                        if (sortField === 'createdAt') {
-                            aValue = new Date(aValue).getTime();
-                            bValue = new Date(bValue).getTime();
-                        } else {
-                            aValue = aValue.toLowerCase();
-                            bValue = bValue.toLowerCase();
-                        }
-
-                        if (aValue < bValue) {
-                            return -1 * sortOrder;
-                        }
-                        if (aValue > bValue) {
-                            return 1 * sortOrder;
-                        }
-                        return 0;
-                    });
-                }
-            };
-
-            // Tải báo cáo khi khởi động
-            $scope.loadReports();
-        });
-    </script> -->
 </body>
 
 </html>
