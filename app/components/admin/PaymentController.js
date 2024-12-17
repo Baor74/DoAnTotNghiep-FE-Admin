@@ -7,6 +7,13 @@ app.controller('PaymentController', function ($scope, $http, $location) {
     $scope.currentPage = 0;
     $scope.pageSize = 10;
     $scope.totalPages = 0;
+    $scope.searchParams = {
+        userId: null,
+        paymentId: null,
+        postId: null,
+        page: 0,
+        size: 10
+    };
 
     // Lấy token từ localStorage
     const token = localStorage.getItem('token');
@@ -19,17 +26,68 @@ app.controller('PaymentController', function ($scope, $http, $location) {
     };
 
     $scope.loadAllPayments = function () {
-        $http.get('http://localhost:8080/admin/payments/all') // URL API
+        // Gọi API với các tham số phân trang
+        $http.get('http://localhost:8080/admin/payments/all', {
+            params: {
+                page: $scope.currentPage,
+                size: $scope.pageSize
+            }
+        })
+        .then(function (response) {
+            $scope.payments = response.data.content; // Lấy dữ liệu thanh toán từ `content`
+            console.log($scope.payments);
+            $scope.totalPages = response.data.totalPages; // Tổng số trang
+            $scope.totalElements = response.data.totalElements; // Tổng số phần tử
+        })
+        .catch(function (error) {
+            console.error('Lỗi khi tải danh sách thanh toán:', error);
+            $scope.errorMessage = 'Không thể tải danh sách thanh toán. Vui lòng thử lại sau.';
+        });
+    };
+    
+
+    $scope.searchPayments = function (query) {
+        if (!query) {
+            $scope.errorMessage = 'Vui lòng nhập từ khóa tìm kiếm!';
+            return;
+        }
+
+        // Xác định loại tìm kiếm dựa trên query
+        const params = {
+            userId: null,
+            paymentId: null,
+            postId: null,
+            page: $scope.currentPage,
+            size: $scope.pageSize
+        };
+
+        if (!isNaN(query)) {
+            // Nếu input là số, xác định dựa trên logic kinh doanh
+            if (query.length >= 10) {
+                params.paymentId = query; // Giả sử ID thanh toán có ít nhất 10 ký tự
+            } else if (query.length <= 5) {
+                params.userId = query; // Giả sử UserId có ít nhất 5 ký tự
+            } else {
+                params.postId = query; // Nếu không rơi vào các trường hợp trên, là ID bài đăng
+            }
+        } else {
+            $scope.errorMessage = 'Chỉ hỗ trợ tìm kiếm bằng số!';
+            return;
+        }
+
+        // Gửi yêu cầu tìm kiếm
+        $http.get('http://localhost:8080/admin/payments/search', { params: params })
             .then(function (response) {
-                $scope.payments = response.data; // Lưu danh sách thanh toán vào $scope.payments
+                $scope.payments = response.data.content; // Dữ liệu trang hiện tại
+                $scope.totalPages = response.data.totalPages; // Tổng số trang
+                $scope.currentPage = response.data.number;   // Trang hiện tại
+                $scope.errorMessage = ''; // Xóa lỗi cũ
             })
             .catch(function (error) {
-                console.error('Lỗi khi tải danh sách thanh toán:', error);
-                $scope.errorMessage = 'Không thể tải danh sách thanh toán. Vui lòng thử lại sau.';
+                console.error('Lỗi khi tìm kiếm thanh toán:', error);
+                $scope.errorMessage = 'Không thể tìm kiếm thanh toán. Vui lòng thử lại sau.';
             });
     };
-
-    // Gọi hàm loadAllPayments khi controller được khởi tạo
 
     // Load payments with pagination
     $scope.loadPayments = function (userId, page, size) {
@@ -68,25 +126,25 @@ app.controller('PaymentController', function ($scope, $http, $location) {
     
       };
 
-    // Load next page
     $scope.nextPage = function () {
         if ($scope.currentPage < $scope.totalPages - 1) {
-            $scope.loadPayments(1, $scope.currentPage + 1, $scope.pageSize);
+            $scope.currentPage++;
+            $scope.loadAllPayments();
         }
     };
-
+    
+    // Hàm chuyển trang trước đó
+    $scope.prevPage = function () {
+        if ($scope.currentPage > 0) {
+            $scope.currentPage--;
+            $scope.loadAllPayments();
+        }
+    };
     $scope.formatCurrency = function (amount) {
         if (amount != null) {
             return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
         return "0 VND";
-    };
-    
-    // Load previous page
-    $scope.prevPage = function () {
-        if ($scope.currentPage > 0) {
-            $scope.loadPayments(1, $scope.currentPage - 1, $scope.pageSize);
-        }
     };
 
     $scope.searchPayments = function (query) {
@@ -96,7 +154,7 @@ app.controller('PaymentController', function ($scope, $http, $location) {
         }
     
         const params = {
-            userId: 1, // Thay bằng userId hiện tại
+            userId: null,
             paymentId: null,
             postId: null,
             page: 0,
@@ -112,7 +170,7 @@ app.controller('PaymentController', function ($scope, $http, $location) {
             return;
         }
     
-        $http.get('http://localhost:8080/api/vnpay/search', { 
+        $http.get('http://localhost:8080/admin/payments/search', { 
             params: params, 
             headers: config.headers // Thêm headers vào request
         })
@@ -126,10 +184,6 @@ app.controller('PaymentController', function ($scope, $http, $location) {
         });
     };
     
-    
 
-    
- 
-    $scope.loadPayments(1, 0, $scope.pageSize);
-    // $scope.loadAllPayments();
+    $scope.loadAllPayments();
 });

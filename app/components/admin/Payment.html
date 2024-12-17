@@ -40,11 +40,11 @@
             <div class="form-floating flex-grow-1 me-2">
                 <input type="text" ng-model="searchQuery" class="form-control" placeholder="Tìm kiếm thanh toán..."
                     ng-keypress="onSearchKeyPress($event)">
-                <label for="fullname">Tìm kiếm theo ID bài đăng, ID thanh toán</label>
+                <label for="fullname">Tìm kiếm theo ID bài đăng, ID thanh toán, UserId</label>
             </div>
             <button type="submit" class="btn btn-primary flex-shrink-0">Tìm kiếm</button>
         </form>
-        <button class="btn btn-primary" ng-click="loadPayments(1, 0, pageSize)">Làm mới</button>
+        <button class="btn btn-primary" ng-click="loadAllPayments()">Làm mới</button>
 
         <!-- Dropdown sắp xếp -->
         <div class="flex-grow-0">
@@ -64,8 +64,9 @@
             <tr class="text-center">
                 <th>ID thanh toán</th>
                 <th>ID bài đăng</th>
+                <th>ID User</th>
                 <th>ID giao dịch</th>
-                <th>Tên bài đăng</th>
+                
                 <th>Số tiền</th>
                 <th>Ngày thanh toán</th>
                 <th>Trạng thái</th>
@@ -73,11 +74,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="payment in userPayments | filter: searchQuery | orderBy: sortCriteria">
+            <tr ng-repeat="payment in payments | filter: searchQuery | orderBy: sortCriteria">
                 <td>{{ payment.paymentId }}</td>
-                <td>{{ payment.postId.postId }}</td>
+                <td>{{ payment.postId }}</td>
+                <td>{{ payment.userId }}</td>
                 <td>{{ payment.vnpTxnRef }}</td>
-                <td>{{ payment.postId.parkingName }}</td>
+                
                 <td>{{formatCurrency(payment.paymentAmount) + " " + payment.currency}}</td>
                 <td>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</td>
                 <td>{{ payment.paymentStatus }}</td>
