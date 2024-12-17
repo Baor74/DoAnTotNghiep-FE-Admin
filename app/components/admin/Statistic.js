@@ -11,20 +11,25 @@ app.controller("adminAppController", function ($scope, $http, $location) {
     $scope.selectYear = new Date().getFullYear();
 
     $scope.updateYear = function () {
-        if ($scope.year && !isNaN($scope.year) && $scope.year.toString().length === 4 && $scope.year <= $scope.selectYear) {
+        if ($scope.year && !isNaN($scope.year) && $scope.year.toString().length === 4) {
             $scope.selectYear = $scope.year;
-
             $scope.paymentLineChart();
         } else {
-            alert("Vui lòng nhập đúng năm");
+            alert('Vui lòng nhập đúng định dạng năm ("yyyy", VD: 2024)');
         }
+        $scope.selectYear = new Date().getFullYear();
 
     }
 
     const initializeLineChart = (lineChartData) => {
         const ctx2 = document.getElementById('lineChart');
+        if (!lineChartData || lineChartData.datasets[0].data.every(value => value === 0)) {
+            alert('Năm này không có dữ liệu'); // No data alert
+            return; // Return early if no data
+        }
         if (lineChart) {
             lineChart.data = lineChartData; // Update chart data
+            console.log(lineChart.data);
             lineChart.update(); // Refresh chart
         } else {
             lineChart = new Chart(ctx2, {
