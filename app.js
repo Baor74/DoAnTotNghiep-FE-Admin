@@ -55,7 +55,7 @@ app.config(["$routeProvider", "$locationProvider", function ($routeProvider,  $l
             controller: 'PriceController'
         })
         .when('/report', {
-            templateUrl: 'app/components/admin/Report.html',
+            templateUrl: 'app/components/admin/Rp.html',
             controller: 'ReportController'
         })
         .when('/user', {
